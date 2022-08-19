@@ -143,7 +143,10 @@ local function allowed(tool)
 	end
 end
 
-function enchanting.put(_, listname, _, stack)
+function enchanting.put(pos, listname, _, stack, player)
+	if minetest.is_protected(pos, player:get_player_name()) then
+		return 0
+	end
 	local stackname = stack:get_name()
 	if listname == "mese" and (stackname == "default:mese_crystal" or
 			stackname == "imese:industrial_mese_crystal") then
@@ -153,6 +156,13 @@ function enchanting.put(_, listname, _, stack)
 	end
 
 	return 0
+end
+
+local function allow_metadata_inventory_take(pos, listname, index, stack, player)
+	if minetest.is_protected(pos, player:get_player_name()) then
+		return 0
+	end
+	return stack:get_count()
 end
 
 function enchanting.on_take(pos, listname)
@@ -233,6 +243,7 @@ xdecor.register("enchantment_table", {
 	on_metadata_inventory_put = enchanting.on_put,
 	on_metadata_inventory_take = enchanting.on_take,
 	allow_metadata_inventory_put = enchanting.put,
+	allow_metadata_inventory_take = allow_metadata_inventory_take,
 	allow_metadata_inventory_move = function()
 		return 0
 	end,

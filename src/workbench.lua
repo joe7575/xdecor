@@ -178,6 +178,9 @@ function workbench.timer(pos)
 end
 
 function workbench.allow_put(pos, listname, index, stack, player)
+	if minetest.is_protected(pos, player:get_player_name()) then
+		return 0
+	end
 	local stackname = stack:get_name()
 	if (listname == "tool" and stack:get_wear() > 0 and
 		workbench:repairable(stackname)) or
@@ -216,6 +219,9 @@ function workbench.on_move(pos, from_list, from_index, to_list, to_index, count,
 end
 
 function workbench.allow_take(pos, listname, index, stack, player)
+	if minetest.is_protected(pos, player:get_player_name()) then
+		return 0
+	end
 	return stack:get_count()
 end
 
